@@ -63,6 +63,7 @@ use pocketmine\network\mcpe\protocol\ClientboundPacket;
 use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\network\mcpe\protocol\serializer\PacketBatch;
 use pocketmine\network\mcpe\protocol\serializer\PacketSerializerContext;
+use pocketmine\network\mcpe\protocol\types\CompressionAlgorithm;
 use pocketmine\network\mcpe\raklib\RakLibInterface;
 use pocketmine\network\mcpe\StandardEntityEventBroadcaster;
 use pocketmine\network\mcpe\StandardPacketBroadcaster;
@@ -125,6 +126,7 @@ use Symfony\Component\Filesystem\Path;
 use function array_fill;
 use function array_sum;
 use function base64_encode;
+use function chr;
 use function cli_set_process_title;
 use function copy;
 use function count;
@@ -1381,19 +1383,26 @@ class Server{
 
 			$buffer = $stream->getBuffer();
 
-			if($sync === null){
-				$threshold = $compressor->getCompressionThreshold();
-				$sync = !$this->networkCompressionAsync || $threshold === null || strlen($stream->getBuffer()) < $threshold;
-			}
-
+			$threshold = $compressor->getCompressionThreshold();
 			$promise = new CompressBatchPromise();
-			if(!$sync && strlen($buffer) >= $this->networkCompressionAsyncThreshold){
-				$task = new CompressBatchTask($buffer, $promise, $compressor);
-				$this->asyncPool->submitTask($task);
+			if($threshold === null || strlen($buffer) < $compressor->getCompressionThreshold()){
+				$compressionType = CompressionAlgorithm::NONE;
+				$compressed = $buffer;
+
 			}else{
-				$promise->resolve($compressor->compress($buffer));
+				$sync ??= !$this->networkCompressionAsync;
+
+				if(!$sync && strlen($buffer) >= $this->networkCompressionAsyncThreshold){
+					$task = new CompressBatchTask($buffer, $promise, $compressor);
+					$this->asyncPool->submitTask($task);
+					return $promise;
+				}
+
+				$compressionType = $compressor->getNetworkId();
+				$compressed = $compressor->compress($buffer);
 			}
 
+			$promise->resolve(chr($compressionType) . $compressed);
 			return $promise;
 		}finally{
 			$timings->stopTiming();

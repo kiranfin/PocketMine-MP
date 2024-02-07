@@ -116,6 +116,7 @@ class ChunkCache implements ChunkListener{
 				new ChunkRequestTask(
 					$chunkX,
 					$chunkZ,
+					$this->compressor->getNetworkId(),
 					$chunk,
 					$this->caches[$chunkHash],
 					$this->compressor,

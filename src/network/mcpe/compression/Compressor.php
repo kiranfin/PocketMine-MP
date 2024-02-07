@@ -32,6 +32,14 @@ interface Compressor{
 	public function compress(string $payload) : string;
 
 	/**
+	 * Returns the canonical ID of this compressor, used to tell the remote end how to decompress a packet compressed
+	 * with this compressor.
+	 *
+	 * @phpstan-return int<0, 2>
+	 */
+	public function getNetworkId() : int;
+
+	/**
 	 * Returns the minimum size of packet batch that the compressor will attempt to compress.
 	 *
 	 * The compressor's output **MUST** still be valid input for the decompressor even if the compressor input is

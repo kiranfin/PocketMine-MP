@@ -31,6 +31,7 @@ use pocketmine\network\mcpe\protocol\LevelChunkPacket;
 use pocketmine\network\mcpe\protocol\serializer\PacketBatch;
 use pocketmine\network\mcpe\protocol\serializer\PacketSerializerContext;
 use pocketmine\network\mcpe\protocol\types\ChunkPosition;
+use pocketmine\network\mcpe\protocol\types\DimensionIds;
 use pocketmine\network\mcpe\serializer\ChunkSerializer;
 use pocketmine\scheduler\AsyncTask;
 use pocketmine\utils\BinaryStream;
@@ -48,6 +49,9 @@ class ChunkRequestTask extends AsyncTask{
 	/** @var int */
 	protected $chunkZ;
 
+	/** @phpstan-var DimensionIds::* */
+	private int $dimensionId;
+
 	/** @var Compressor */
 	protected $compressor;
 
@@ -55,13 +59,15 @@ class ChunkRequestTask extends AsyncTask{
 
 	/**
 	 * @phpstan-param (\Closure() : void)|null $onError
+	 * @phpstan-param DimensionIds::* $dimensionId
 	 */
-	public function __construct(int $chunkX, int $chunkZ, Chunk $chunk, CompressBatchPromise $promise, Compressor $compressor, ?\Closure $onError = null){
+	public function __construct(int $chunkX, int $chunkZ, int $dimensionId, Chunk $chunk, CompressBatchPromise $promise, Compressor $compressor, ?\Closure $onError = null){
 		$this->compressor = $compressor;
 
 		$this->chunk = FastChunkSerializer::serializeTerrain($chunk);
 		$this->chunkX = $chunkX;
 		$this->chunkZ = $chunkZ;
+		$this->dimensionId = $dimensionId;
 		$this->tiles = ChunkSerializer::serializeTiles($chunk);
 
 		$this->storeLocal(self::TLS_KEY_PROMISE, $promise);
@@ -70,13 +76,14 @@ class ChunkRequestTask extends AsyncTask{
 
 	public function onRun() : void{
 		$chunk = FastChunkSerializer::deserializeTerrain($this->chunk);
+		$dimensionId = $this->dimensionId;
 		$subCount = ChunkSerializer::getSubChunkCount($chunk) + ChunkSerializer::LOWER_PADDING_SIZE;
 		$encoderContext = new PacketSerializerContext(GlobalItemTypeDictionary::getInstance()->getDictionary());
 		$payload = ChunkSerializer::serializeFullChunk($chunk, RuntimeBlockMapping::getInstance(), $encoderContext, $this->tiles);
 
 		$stream = new BinaryStream();
-		PacketBatch::encodePackets($stream, $encoderContext, [LevelChunkPacket::create(new ChunkPosition($this->chunkX, $this->chunkZ), $subCount, false, null, $payload)]);
-		$this->setResult($this->compressor->compress($stream->getBuffer()));
+		PacketBatch::encodePackets($stream, $encoderContext, [LevelChunkPacket::create(new ChunkPosition($this->chunkX, $this->chunkZ), $dimensionId, $subCount, false, null, $payload)]);
+		$this->setResult(chr($this->compressor->getNetworkId()) . $this->compressor->compress($stream->getBuffer()));
 	}
 
 	public function onError() : void{

@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace pocketmine\network\mcpe\compression;
 
+use pocketmine\network\mcpe\protocol\types\CompressionAlgorithm;
 use pocketmine\utils\SingletonTrait;
 use pocketmine\utils\Utils;
 use function function_exists;
@@ -79,5 +80,9 @@ final class ZlibCompressor implements Compressor{
 				self::zlib_encode($payload, 0);
 		}
 		return self::zlib_encode($payload, $compressible ? $this->level : 0);
+	}
+
+	public function getNetworkId() : int{
+		return CompressionAlgorithm::ZLIB;
 	}
 }
