@@ -68,7 +68,6 @@ use pocketmine\network\mcpe\protocol\PlayerListPacket;
 use pocketmine\network\mcpe\protocol\PlayStatusPacket;
 use pocketmine\network\mcpe\protocol\serializer\PacketBatch;
 use pocketmine\network\mcpe\protocol\serializer\PacketSerializer;
-use pocketmine\network\mcpe\protocol\serializer\PacketSerializerContext;
 use pocketmine\network\mcpe\protocol\ServerboundPacket;
 use pocketmine\network\mcpe\protocol\ServerToClientHandshakePacket;
 use pocketmine\network\mcpe\protocol\SetDifficultyPacket;
@@ -176,7 +175,6 @@ class NetworkSession{
 		private Server $server,
 		private NetworkSessionManager $manager,
 		private PacketPool $packetPool,
-		private PacketSerializerContext $packetSerializerContext,
 		private PacketSender $sender,
 		private PacketBroadcaster $broadcaster,
 		private EntityEventBroadcaster $entityEventBroadcaster,
@@ -422,7 +420,7 @@ class NetworkSession{
 			$decodeTimings = Timings::getDecodeDataPacketTimings($packet);
 			$decodeTimings->startTiming();
 			try{
-				$stream = PacketSerializer::decoder($buffer, 0, $this->packetSerializerContext);
+				$stream = PacketSerializer::decoder($buffer, 0);
 				try{
 					$packet->decode($stream);
 				}catch(PacketDecodeException $e){
@@ -472,7 +470,7 @@ class NetworkSession{
 				return false;
 			}
 
-			$this->addToSendBuffer(self::encodePacketTimed(PacketSerializer::encoder($this->packetSerializerContext), $packet));
+			$this->addToSendBuffer(self::encodePacketTimed(PacketSerializer::encoder(), $packet));
 			if($immediate){
 				$this->flushSendBuffer(true);
 			}
@@ -519,7 +517,7 @@ class NetworkSession{
 				PacketBatch::encodeRaw($stream, $this->sendBuffer);
 
 				if($this->enableCompression){
-					$promise = $this->server->prepareBatch(new PacketBatch($stream->getBuffer()), $this->compressor, $syncMode, Timings::$playerNetworkSendCompressSessionBuffer);
+					$promise = $this->server->prepareBatch($stream->getBuffer(), $this->compressor, $syncMode, Timings::$playerNetworkSendCompressSessionBuffer);
 				}else{
 					$promise = new CompressBatchPromise();
 					$promise->resolve($stream->getBuffer());
@@ -531,8 +529,6 @@ class NetworkSession{
 			}
 		}
 	}
-
-	public function getPacketSerializerContext() : PacketSerializerContext{ return $this->packetSerializerContext; }
 
 	public function getBroadcaster() : PacketBroadcaster{ return $this->broadcaster; }
 
