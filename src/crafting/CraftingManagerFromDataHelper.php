@@ -73,6 +73,7 @@ final class CraftingManagerFromDataHelper{
 			if(self::containsUnknownOutputs($output)){
 				continue;
 			}
+			//TODO: check unlocking requirements - our current system doesn't support this
 			$result->registerShapelessRecipe(new ShapelessRecipe(
 				array_map($itemDeserializerFunc, $recipe["input"]),
 				$output,
@@ -87,6 +88,7 @@ final class CraftingManagerFromDataHelper{
 			if(self::containsUnknownOutputs($output)){
 				continue;
 			}
+			//TODO: check unlocking requirements - our current system doesn't support this
 			$result->registerShapedRecipe(new ShapedRecipe(
 				$recipe["shape"],
 				array_map($itemDeserializerFunc, $recipe["input"]),
