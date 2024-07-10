@@ -56,6 +56,7 @@ use pocketmine\network\mcpe\handler\SpawnResponsePacketHandler;
 use pocketmine\network\mcpe\protocol\AvailableCommandsPacket;
 use pocketmine\network\mcpe\protocol\ChunkRadiusUpdatedPacket;
 use pocketmine\network\mcpe\protocol\ClientboundPacket;
+use pocketmine\network\mcpe\protocol\CloseFormPacket;
 use pocketmine\network\mcpe\protocol\DisconnectPacket;
 use pocketmine\network\mcpe\protocol\ModalFormRequestPacket;
 use pocketmine\network\mcpe\protocol\MovePlayerPacket;
@@ -1114,6 +1115,10 @@ class NetworkSession{
 
 	public function onOpenSignEditor(Vector3 $signPosition, bool $frontSide) : void{
 		$this->sendDataPacket(OpenSignPacket::create(BlockPosition::fromVector3($signPosition), $frontSide));
+	}
+
+	public function onCloseForm() : void{
+		$this->sendDataPacket(CloseFormPacket::create());
 	}
 
 	public function tick() : void{

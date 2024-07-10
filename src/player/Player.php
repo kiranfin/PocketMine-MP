@@ -2123,6 +2123,13 @@ class Player extends Human implements CommandSender, ChunkListener, IPlayer{
 	}
 
 	/**
+	 * Closes all form currently opened for this player.
+	 */
+	public function closeForm() : void{
+		$this->getNetworkSession()->onCloseForm();
+	}
+
+	/**
 	 * Transfers a player to another server.
 	 *
 	 * @param string $address The IP address or hostname of the destination server
