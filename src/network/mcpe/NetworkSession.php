@@ -55,8 +55,8 @@ use pocketmine\network\mcpe\handler\SessionStartPacketHandler;
 use pocketmine\network\mcpe\handler\SpawnResponsePacketHandler;
 use pocketmine\network\mcpe\protocol\AvailableCommandsPacket;
 use pocketmine\network\mcpe\protocol\ChunkRadiusUpdatedPacket;
+use pocketmine\network\mcpe\protocol\ClientboundCloseFormPacket;
 use pocketmine\network\mcpe\protocol\ClientboundPacket;
-use pocketmine\network\mcpe\protocol\CloseFormPacket;
 use pocketmine\network\mcpe\protocol\DisconnectPacket;
 use pocketmine\network\mcpe\protocol\ModalFormRequestPacket;
 use pocketmine\network\mcpe\protocol\MovePlayerPacket;
@@ -630,7 +630,7 @@ class NetworkSession{
 	public function disconnect(string $reason, bool $notify = true) : void{
 		$this->tryDisconnect(function() use ($reason, $notify) : void{
 			if($notify){
-				$this->sendDataPacket(DisconnectPacket::create(0, $reason));
+				$this->sendDataPacket(DisconnectPacket::create(0, $reason, ""));
 			}
 			if($this->player !== null){
 				$this->player->onPostDisconnect($reason, null);
@@ -655,7 +655,7 @@ class NetworkSession{
 	 */
 	public function onPlayerDestroyed(string $reason) : void{
 		$this->tryDisconnect(function() use ($reason) : void{
-			$this->sendDataPacket(DisconnectPacket::create(0, $reason));
+			$this->sendDataPacket(DisconnectPacket::create(0, $reason, ""));
 		}, $reason);
 	}
 
@@ -1118,7 +1118,7 @@ class NetworkSession{
 	}
 
 	public function onCloseForm() : void{
-		$this->sendDataPacket(CloseFormPacket::create());
+		$this->sendDataPacket(ClientboundCloseFormPacket::create());
 	}
 
 	public function tick() : void{
