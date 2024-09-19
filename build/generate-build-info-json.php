@@ -30,12 +30,12 @@ if(count($argv) !== 7){
 
 echo json_encode([
 	"php_version" => sprintf("%d.%d", PHP_MAJOR_VERSION, PHP_MINOR_VERSION), //deprecated
-	"base_version" => \pocketmine\VersionInfo::BASE_VERSION,
+	"base_version" => pocketmine\VersionInfo::BASE_VERSION,
 	"build" => (int) $argv[4],
-	"is_dev" => \pocketmine\VersionInfo::IS_DEVELOPMENT_BUILD,
-	"channel" => \pocketmine\VersionInfo::BUILD_CHANNEL,
+	"is_dev" => pocketmine\VersionInfo::IS_DEVELOPMENT_BUILD,
+	"channel" => pocketmine\VersionInfo::BUILD_CHANNEL,
 	"git_commit" => $argv[1],
-	"mcpe_version" => \pocketmine\network\mcpe\protocol\ProtocolInfo::MINECRAFT_VERSION_NETWORK,
+	"mcpe_version" => pocketmine\network\mcpe\protocol\ProtocolInfo::MINECRAFT_VERSION_NETWORK,
 	"date" => time(), //TODO: maybe we should embed this in VersionInfo?
 	"details_url" => "https://github.com/$argv[3]/releases/tag/$argv[2]",
 	"download_url" => "https://github.com/$argv[3]/releases/download/$argv[2]/PocketMine-MP.phar",

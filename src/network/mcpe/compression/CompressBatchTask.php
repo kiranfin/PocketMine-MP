@@ -24,6 +24,7 @@ declare(strict_types=1);
 namespace pocketmine\network\mcpe\compression;
 
 use pocketmine\scheduler\AsyncTask;
+use function chr;
 
 class CompressBatchTask extends AsyncTask{
 

@@ -443,7 +443,7 @@ class ItemFactory{
 		$this->list[self::getListOffset($id, $variant)] = clone $item;
 	}
 
-	public function remap(ItemIdentifier $identifier, Item $item, bool $override = false) : void{
+	public function remap(IID $identifier, Item $item, bool $override = false) : void{
 		if(!$override && $this->isRegistered($identifier->getId(), $identifier->getMeta())){
 			throw new \RuntimeException("Trying to overwrite an already registered item");
 		}

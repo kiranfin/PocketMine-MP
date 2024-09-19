@@ -79,38 +79,38 @@ class MainLogger extends \AttachableThreadedLogger implements \BufferedLogger{
 	}
 
 	public function emergency($message){
-		$this->send($message, \LogLevel::EMERGENCY, "EMERGENCY", TextFormat::RED);
+		$this->send($message, LogLevel::EMERGENCY, "EMERGENCY", TextFormat::RED);
 	}
 
 	public function alert($message){
-		$this->send($message, \LogLevel::ALERT, "ALERT", TextFormat::RED);
+		$this->send($message, LogLevel::ALERT, "ALERT", TextFormat::RED);
 	}
 
 	public function critical($message){
-		$this->send($message, \LogLevel::CRITICAL, "CRITICAL", TextFormat::RED);
+		$this->send($message, LogLevel::CRITICAL, "CRITICAL", TextFormat::RED);
 	}
 
 	public function error($message){
-		$this->send($message, \LogLevel::ERROR, "ERROR", TextFormat::DARK_RED);
+		$this->send($message, LogLevel::ERROR, "ERROR", TextFormat::DARK_RED);
 	}
 
 	public function warning($message){
-		$this->send($message, \LogLevel::WARNING, "WARNING", TextFormat::YELLOW);
+		$this->send($message, LogLevel::WARNING, "WARNING", TextFormat::YELLOW);
 	}
 
 	public function notice($message){
-		$this->send($message, \LogLevel::NOTICE, "NOTICE", TextFormat::AQUA);
+		$this->send($message, LogLevel::NOTICE, "NOTICE", TextFormat::AQUA);
 	}
 
 	public function info($message){
-		$this->send($message, \LogLevel::INFO, "INFO", TextFormat::WHITE);
+		$this->send($message, LogLevel::INFO, "INFO", TextFormat::WHITE);
 	}
 
 	public function debug($message, bool $force = false){
 		if(!$this->logDebug && !$force){
 			return;
 		}
-		$this->send($message, \LogLevel::DEBUG, "DEBUG", TextFormat::GRAY);
+		$this->send($message, LogLevel::DEBUG, "DEBUG", TextFormat::GRAY);
 	}
 
 	public function setLogDebug(bool $logDebug) : void{

@@ -503,7 +503,7 @@ class BlockFactory{
 			$this->remap($magicNumber >= 4 ? Ids::LOG2 : Ids::LOG, ($magicNumber & 0x03) | 0b1100, $wood);
 
 			$allSidedLogs[] = $wood;
-			$allSidedLogs[] = new Wood(new BID(Ids::WOOD, $magicNumber | BlockLegacyMetadata::WOOD_FLAG_STRIPPED), "Stripped $name Wood", $logBreakInfo, $treeType, true);
+			$allSidedLogs[] = new Wood(new BID(Ids::WOOD, $magicNumber | Meta::WOOD_FLAG_STRIPPED), "Stripped $name Wood", $logBreakInfo, $treeType, true);
 
 			$this->registerAllMeta(new Log(BlockLegacyIdHelper::getStrippedLogIdentifier($treeType), "Stripped " . $name . " Log", $logBreakInfo, $treeType, true));
 			$this->registerAllMeta(new FenceGate(BlockLegacyIdHelper::getWoodenFenceIdentifier($treeType), $name . " Fence Gate", $planksBreakInfo));
@@ -608,12 +608,12 @@ class BlockFactory{
 			BreakInfo::instant(),
 		));
 		$this->registerAllMeta(new FloorCoralFan(
-			new BlockIdentifierFlattened(Ids::CORAL_FAN, [Ids::CORAL_FAN_DEAD], 0, ItemIds::CORAL_FAN),
+			new BIDFlattened(Ids::CORAL_FAN, [Ids::CORAL_FAN_DEAD], 0, ItemIds::CORAL_FAN),
 			"Coral Fan",
 			BreakInfo::instant(),
 		));
 		$this->registerAllMeta(new WallCoralFan(
-			new BlockIdentifierFlattened(Ids::CORAL_FAN_HANG, [Ids::CORAL_FAN_HANG2, Ids::CORAL_FAN_HANG3], 0, ItemIds::CORAL_FAN),
+			new BIDFlattened(Ids::CORAL_FAN_HANG, [Ids::CORAL_FAN_HANG2, Ids::CORAL_FAN_HANG3], 0, ItemIds::CORAL_FAN),
 			"Wall Coral Fan",
 			BreakInfo::instant(),
 		));
@@ -956,7 +956,7 @@ class BlockFactory{
 	private function registerSlabWithDoubleHighBitsRemapping(Slab $block) : void{
 		$this->register($block);
 		$identifierFlattened = $block->getIdInfo();
-		if($identifierFlattened instanceof BlockIdentifierFlattened){
+		if($identifierFlattened instanceof BIDFlattened){
 			$this->remap($identifierFlattened->getSecondId(), $identifierFlattened->getVariant() | 0x8, $block->setSlabType(SlabType::DOUBLE()));
 		}
 	}
