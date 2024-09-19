@@ -641,9 +641,9 @@ class NetworkSession{
 	/**
 	 * Instructs the remote client to connect to a different server.
 	 */
-	public function transfer(string $ip, int $port, string $reason = "transfer") : void{
-		$this->tryDisconnect(function() use ($ip, $port, $reason) : void{
-			$this->sendDataPacket(TransferPacket::create($ip, $port), true);
+	public function transfer(string $ip, int $port, string $reason = "transfer", bool $reloadWorld = false) : void{
+		$this->tryDisconnect(function() use ($ip, $port, $reason, $reloadWorld) : void{
+			$this->sendDataPacket(TransferPacket::create($ip, $port, $reloadWorld), true);
 			if($this->player !== null){
 				$this->player->onPostDisconnect($reason, null);
 			}
