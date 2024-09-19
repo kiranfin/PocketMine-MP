@@ -37,21 +37,21 @@ foreach($factory->getAllKnownStates() as $index => $block){
 }
 $oldTable = json_decode(file_get_contents(__DIR__ . '/block_factory_consistency_check.json'), true);
 if(!is_array($oldTable)){
-	throw new pocketmine\utils\AssumptionFailedError("Old table should be array{knownStates: array<string, string>, remaps: array<string, int>}");
+	throw new \pocketmine\utils\AssumptionFailedError("Old table should be array{knownStates: array<string, string>, remaps: array<string, int>}");
 }
 $old = $oldTable["knownStates"];
 $oldRemaps = $oldTable["remaps"];
 
 foreach($old as $k => $name){
 	if(!isset($new[$k])){
-		echo "Removed state for $name (" . ($k >> pocketmine\block\Block::INTERNAL_METADATA_BITS) . ":" . ($k & pocketmine\block\Block::INTERNAL_METADATA_MASK) . ")\n";
+		echo "Removed state for $name (" . ($k >> \pocketmine\block\Block::INTERNAL_METADATA_BITS) . ":" . ($k & \pocketmine\block\Block::INTERNAL_METADATA_MASK) . ")\n";
 	}
 }
 foreach($new as $k => $name){
 	if(!isset($old[$k])){
-		echo "Added state for $name (" . ($k >> pocketmine\block\Block::INTERNAL_METADATA_BITS) . ":" . ($k & pocketmine\block\Block::INTERNAL_METADATA_MASK) . ")\n";
+		echo "Added state for $name (" . ($k >> \pocketmine\block\Block::INTERNAL_METADATA_BITS) . ":" . ($k & \pocketmine\block\Block::INTERNAL_METADATA_MASK) . ")\n";
 	}elseif($old[$k] !== $name){
-		echo "Name changed (" . ($k >> pocketmine\block\Block::INTERNAL_METADATA_BITS) . ":" . ($k & pocketmine\block\Block::INTERNAL_METADATA_MASK) . "): " . $old[$k] . " -> " . $name . "\n";
+		echo "Name changed (" . ($k >> \pocketmine\block\Block::INTERNAL_METADATA_BITS) . ":" . ($k & \pocketmine\block\Block::INTERNAL_METADATA_MASK) . "): " . $old[$k] . " -> " . $name . "\n";
 	}
 }
 
