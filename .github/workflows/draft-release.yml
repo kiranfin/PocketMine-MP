@@ -98,8 +98,4 @@ jobs:
           body: |
             **For Minecraft: Bedrock Edition ${{ steps.get-pm-version.outputs.MCPE_VERSION }}**
 
-            Please see the [changelogs](${{ github.server_url }}/${{ github.repository }}/blob/${{ steps.get-pm-version.outputs.PM_VERSION }}/changelogs/${{ steps.get-pm-version.outputs.PM_VERSION_SHORT }}${{ steps.get-pm-version.outputs.CHANGELOG_SUFFIX }}.md#${{ steps.get-pm-version.outputs.PM_VERSION_MD }}) for details.
-
-            :information_source: Download the recommended PHP binary [here](${{ steps.php-binary-url.outputs.PHP_BINARY_URL }}).
-
             :skull: **4.x is now obsolete and may stop getting updates at any time. Please read https://github.com/pmmp/PocketMine-MP/issues/6036 for details.**
