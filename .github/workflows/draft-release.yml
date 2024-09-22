@@ -97,5 +97,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           body: |
             **For Minecraft: Bedrock Edition ${{ steps.get-pm-version.outputs.MCPE_VERSION }}**
+            
+            :information_source: Download recommended PHP binaries from here: [PHP Binaries](https://github.com/pmmp/PHP-Binaries/releases/tag/php-8.1-build-377)
 
             :skull: **4.x is now obsolete and may stop getting updates at any time. Please read https://github.com/pmmp/PocketMine-MP/issues/6036 for details.**
