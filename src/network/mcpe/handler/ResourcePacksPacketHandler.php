@@ -38,6 +38,7 @@ use pocketmine\network\mcpe\protocol\types\resourcepacks\ResourcePackStackEntry;
 use pocketmine\network\mcpe\protocol\types\resourcepacks\ResourcePackType;
 use pocketmine\resourcepacks\ResourcePack;
 use pocketmine\resourcepacks\ResourcePackManager;
+use Ramsey\Uuid\Uuid;
 use function array_map;
 use function ceil;
 use function count;
@@ -70,7 +71,7 @@ class ResourcePacksPacketHandler extends PacketHandler{
 			$encryptionKey = $this->resourcePackManager->getPackEncryptionKey($pack->getPackId());
 
 			return new ResourcePackInfoEntry(
-				$pack->getPackId(),
+				Uuid::fromString($pack->getPackId()),
 				$pack->getPackVersion(),
 				$pack->getPackSize(),
 				$encryptionKey ?? "",
@@ -80,7 +81,14 @@ class ResourcePacksPacketHandler extends PacketHandler{
 			);
 		}, $this->resourcePackManager->getResourceStack());
 		//TODO: support forcing server packs
-		$this->session->sendDataPacket(ResourcePacksInfoPacket::create($resourcePackEntries, $this->resourcePackManager->resourcePacksRequired(), false, false));
+		$this->session->sendDataPacket(ResourcePacksInfoPacket::create(
+			$resourcePackEntries,
+			$this->resourcePackManager->resourcePacksRequired(),
+			false,
+			false,
+			worldTemplateId: Uuid::fromString(Uuid::NIL),
+			worldTemplateVersion: ""
+		));
 		$this->session->getLogger()->debug("Waiting for client to accept resource packs");
 	}
 
