@@ -23,15 +23,78 @@ declare(strict_types=1);
 
 namespace pocketmine\crafting;
 
+use pocketmine\crafting\json\ItemStackData;
+use pocketmine\data\SavedDataLoadingException;
+use pocketmine\errorhandler\ErrorToExceptionHandler;
 use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
+use pocketmine\nbt\LittleEndianNbtSerializer;
 use pocketmine\utils\AssumptionFailedError;
 use pocketmine\utils\Filesystem;
+use pocketmine\utils\Utils;
 use function array_map;
 use function is_array;
 use function json_decode;
 
 final class CraftingManagerFromDataHelper{
+
+	/**
+	 * @return mixed[]
+	 *
+	 * @phpstan-template TData of object
+	 * @phpstan-param class-string<TData> $modelCLass
+	 * @phpstan-return list<TData>
+	 */
+	public static function loadJsonArrayOfObjectsFile(string $filePath, string $modelCLass) : array{
+		$recipes = json_decode(Filesystem::fileGetContents($filePath));
+		if(!is_array($recipes)){
+			throw new SavedDataLoadingException("$filePath root should be an array, got " . get_debug_type($recipes));
+		}
+
+		$mapper = new \JsonMapper();
+		$mapper->bStrictObjectTypeChecking = true;
+		$mapper->bExceptionOnUndefinedProperty = true;
+		$mapper->bExceptionOnMissingData = true;
+
+		return self::loadJsonObjectListIntoModel($mapper, $modelCLass, $recipes);
+	}
+
+	/**
+	 * @phpstan-template TRecipeData of object
+	 * @phpstan-param class-string<TRecipeData> $modelClass
+	 * @phpstan-return TRecipeData
+	 */
+	private static function loadJsonObjectIntoModel(\JsonMapper $mapper, string $modelClass, object $data) : object{
+		//JsonMapper does this for subtypes, but not for the base type :(
+		try{
+			return $mapper->map($data, (new \ReflectionClass($modelClass))->newInstanceWithoutConstructor());
+		}catch(\JsonMapper_Exception $e){
+			throw new SavedDataLoadingException($e->getMessage(), 0, $e);
+		}
+	}
+
+	/**
+	 * @param mixed[] $data
+	 * @return object[]
+	 *
+	 * @phpstan-template TRecipeData of object
+	 * @phpstan-param class-string<TRecipeData> $modelClass
+	 * @phpstan-return list<TRecipeData>
+	 */
+	private static function loadJsonObjectListIntoModel(\JsonMapper $mapper, string $modelClass, array $data) : array{
+		$result = [];
+		foreach(Utils::promoteKeys($data) as $i => $item){
+			if(!is_object($item)){
+				throw new SavedDataLoadingException("Invalid entry at index $i: expected object, got " . get_debug_type($item));
+			}
+			try{
+				$result[] = self::loadJsonObjectIntoModel($mapper, $modelClass, $item);
+			}catch(SavedDataLoadingException $e){
+				throw new SavedDataLoadingException("Invalid entry at index $i: " . $e->getMessage(), 0, $e);
+			}
+		}
+		return $result;
+	}
 
 	/**
 	 * @param Item[] $items

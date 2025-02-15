@@ -33,7 +33,9 @@ use pocketmine\block\inventory\HopperInventory;
 use pocketmine\block\inventory\LoomInventory;
 use pocketmine\block\inventory\StonecutterInventory;
 use pocketmine\crafting\FurnaceType;
+use pocketmine\inventory\CreativeCategory;
 use pocketmine\inventory\CreativeInventory;
+use pocketmine\inventory\data\CreativeGroup;
 use pocketmine\inventory\Inventory;
 use pocketmine\inventory\transaction\action\SlotChangeAction;
 use pocketmine\inventory\transaction\InventoryTransaction;
@@ -50,6 +52,8 @@ use pocketmine\network\mcpe\protocol\MobEquipmentPacket;
 use pocketmine\network\mcpe\protocol\types\BlockPosition;
 use pocketmine\network\mcpe\protocol\types\inventory\ContainerIds;
 use pocketmine\network\mcpe\protocol\types\inventory\CreativeContentEntry;
+use pocketmine\network\mcpe\protocol\types\inventory\CreativeGroupEntry;
+use pocketmine\network\mcpe\protocol\types\inventory\CreativeItemEntry;
 use pocketmine\network\mcpe\protocol\types\inventory\FullContainerName;
 use pocketmine\network\mcpe\protocol\types\inventory\ItemStack;
 use pocketmine\network\mcpe\protocol\types\inventory\ItemStackWrapper;
@@ -641,16 +645,46 @@ class InventoryManager{
 	}
 
 	public function syncCreative() : void{
-//		$typeConverter = TypeConverter::getInstance();
-//
-//		$entries = [];
-//		if(!$this->player->isSpectator()){
-//			//creative inventory may have holes if items were unregistered - ensure network IDs used are always consistent
-//			foreach(CreativeInventory::getInstance()->getAll() as $k => $item){
-//				$entries[] = new CreativeContentEntry($k, $typeConverter->coreItemStackToNet($item));
-//			}
-//		}
-//		$this->session->sendDataPacket(CreativeContentPacket::create($entries));
+		/** @var CreativeGroupEntry[] $groups */
+		$groups = [];
+		/** @var CreativeItemEntry[] $items */
+		$items = [];
+		$inventory = CreativeInventory::getInstance();
+
+		$typeConverter = TypeConverter::getInstance();
+
+		$index = 0;
+		$mappedGroups = array_reduce($inventory->getItemGroup(), function (array $carry, CreativeGroup $group) use ($typeConverter, &$index, &$groups) : array{
+			if (!isset($carry[$id = spl_object_id($group)])) {
+				$carry[$id] = $index++;
+
+				$categoryId = match($group->getCategoryId()){
+					CreativeCategory::CONSTRUCTION => CreativeContentPacket::CATEGORY_CONSTRUCTION,
+					CreativeCategory::NATURE => CreativeContentPacket::CATEGORY_NATURE,
+					CreativeCategory::EQUIPMENT => CreativeContentPacket::CATEGORY_EQUIPMENT,
+					CreativeCategory::ITEMS => CreativeContentPacket::CATEGORY_ITEMS
+				};
+
+				$groupIcon = $group->getIcon();
+				$groups[] = new CreativeGroupEntry(
+					$categoryId,
+					$group->getName(),
+					$groupIcon === null ? ItemStack::null() : $typeConverter->coreItemStackToNet($groupIcon)
+				);
+			}
+			return $carry;
+		}, []);
+
+		//creative inventory may have holes if items were unregistered - ensure network IDs used are always consistent
+		foreach($inventory->getAll() as $k => $item){
+			$items[] = new CreativeItemEntry(
+				$k,
+				$typeConverter->coreItemStackToNet($item),
+				$mappedGroups[spl_object_id($inventory->getGroup($k) ?? throw new \AssertionError("Item group not found"))]
+			);
+		}
+
+		$this->session->sendDataPacket(CreativeContentPacket::create($groups, $items));
 	}
 
 	private function newItemStackId() : int{
