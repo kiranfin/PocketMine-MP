@@ -30,6 +30,7 @@ use pocketmine\network\mcpe\convert\GlobalItemTypeDictionary;
 use pocketmine\network\mcpe\convert\TypeConverter;
 use pocketmine\network\mcpe\InventoryManager;
 use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\protocol\ItemRegistryPacket;
 use pocketmine\network\mcpe\protocol\PlayerAuthInputPacket;
 use pocketmine\network\mcpe\protocol\RequestChunkRadiusPacket;
 use pocketmine\network\mcpe\protocol\StartGamePacket;
@@ -109,9 +110,15 @@ class PreSpawnPacketHandler extends PacketHandler{
 				false,
 				new NetworkPermissions(disableClientSounds: true),
 				[],
-				0,
-				GlobalItemTypeDictionary::getInstance()->getDictionary()->getEntries(),
+				0
 			));
+
+			$this->session->getLogger()->debug("Sending items");
+			$this->session->sendDataPacket(
+				ItemRegistryPacket::create(
+					GlobalItemTypeDictionary::getInstance()->getDictionary()->getEntries()
+				)
+			);
 
 			$this->session->getLogger()->debug("Sending actor identifiers");
 			$this->session->sendDataPacket(StaticPacketCache::getInstance()->getAvailableActorIdentifiers());

@@ -641,16 +641,16 @@ class InventoryManager{
 	}
 
 	public function syncCreative() : void{
-		$typeConverter = TypeConverter::getInstance();
-
-		$entries = [];
-		if(!$this->player->isSpectator()){
-			//creative inventory may have holes if items were unregistered - ensure network IDs used are always consistent
-			foreach(CreativeInventory::getInstance()->getAll() as $k => $item){
-				$entries[] = new CreativeContentEntry($k, $typeConverter->coreItemStackToNet($item));
-			}
-		}
-		$this->session->sendDataPacket(CreativeContentPacket::create($entries));
+//		$typeConverter = TypeConverter::getInstance();
+//
+//		$entries = [];
+//		if(!$this->player->isSpectator()){
+//			//creative inventory may have holes if items were unregistered - ensure network IDs used are always consistent
+//			foreach(CreativeInventory::getInstance()->getAll() as $k => $item){
+//				$entries[] = new CreativeContentEntry($k, $typeConverter->coreItemStackToNet($item));
+//			}
+//		}
+//		$this->session->sendDataPacket(CreativeContentPacket::create($entries));
 	}
 
 	private function newItemStackId() : int{
