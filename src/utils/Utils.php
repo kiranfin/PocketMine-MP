@@ -500,6 +500,18 @@ final class Utils{
 	}
 
 	/**
+	 * Gets rid of PHPStan BenevolentUnionType on array keys, so that wrong type errors get reported properly
+	 * Use this if you don't care what the key type is and just want proper PHPStan error reporting
+	 *
+	 * @phpstan-template TValueType
+	 * @phpstan-param array<TValueType> $array
+	 * @phpstan-return array<int|string, TValueType>
+	 */
+	public static function promoteKeys(array $array) : array{
+		return $array;
+	}
+
+	/**
 	 * Extracts one-line tags from the doc-comment
 	 *
 	 * @return string[] an array of tagName => tag value. If the tag has no value, an empty string is used as the value.

@@ -24,11 +24,16 @@ declare(strict_types=1);
 namespace pocketmine\network\mcpe\convert;
 
 use pocketmine\data\bedrock\BedrockDataFiles;
+use pocketmine\errorhandler\ErrorToExceptionHandler;
+use pocketmine\nbt\LittleEndianNbtSerializer;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\mcpe\protocol\serializer\ItemTypeDictionary;
+use pocketmine\network\mcpe\protocol\types\CacheableNbt;
 use pocketmine\network\mcpe\protocol\types\ItemTypeEntry;
 use pocketmine\utils\AssumptionFailedError;
 use pocketmine\utils\Filesystem;
 use pocketmine\utils\SingletonTrait;
+use pocketmine\utils\Utils;
 use function is_array;
 use function is_bool;
 use function is_int;
@@ -45,12 +50,15 @@ final class GlobalItemTypeDictionary{
 			throw new AssumptionFailedError("Invalid item list format");
 		}
 
+		$emptyNBT = new CacheableNbt(new CompoundTag());
+		$nbtSerializer = new LittleEndianNbtSerializer();
+
 		$params = [];
 		foreach($table as $name => $entry){
-			if(!is_array($entry) || !is_string($name) || !isset($entry["component_based"], $entry["runtime_id"]) || !is_bool($entry["component_based"]) || !is_int($entry["runtime_id"])){
+			if(!is_array($entry) || !is_string($name) || !isset($entry["component_based"], $entry["runtime_id"], $entry["version"])/* || !array_key_exists("nbt", $entry)*/ || !is_bool($entry["component_based"]) || !is_int($entry["runtime_id"]) || !is_int($entry["version"]) /*|| !(is_string($nbt = $entry["nbt"]) || $nbt === null)*/){
 				throw new AssumptionFailedError("Invalid item list format");
 			}
-			$params[] = new ItemTypeEntry($name, $entry["runtime_id"], $entry["component_based"]);
+			$params[] = new ItemTypeEntry($name, $entry["runtime_id"], $entry["component_based"], $entry["version"], /*$nbt === null ? $emptyNBT : new CacheableNbt($nbtSerializer->read(Utils::assumeNotFalse(base64_decode($nbt, true)))->mustGetCompoundTag())*/$emptyNBT);
 		}
 		return new self(new ItemTypeDictionary($params));
 	}
