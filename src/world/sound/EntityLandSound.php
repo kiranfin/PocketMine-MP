@@ -46,7 +46,8 @@ class EntityLandSound implements Sound{
 			RuntimeBlockMapping::getInstance()->toRuntimeId($this->blockLandedOn->getFullId()),
 			$this->entity::getNetworkTypeId(),
 			false, //TODO: does isBaby have any relevance here?
-			false
+			false,
+			$this->entity->getId()
 		)];
 	}
 }
