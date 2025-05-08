@@ -156,6 +156,7 @@ class LoginPacketHandler extends PacketHandler{
 				$mapper->bExceptionOnMissingData = true;
 				$mapper->bExceptionOnUndefinedProperty = true;
 				try{
+					$claims["extraData"]["titleId"] = $claims["extraData"]["titleId"] ?? "";
 					/** @var AuthenticationData $extraData */
 					$extraData = $mapper->map($claims["extraData"], new AuthenticationData());
 				}catch(\JsonMapper_Exception $e){
