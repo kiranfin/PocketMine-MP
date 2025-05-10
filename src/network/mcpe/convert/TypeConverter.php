@@ -217,7 +217,7 @@ class TypeConverter{
 		if($itemStack->getBlockRuntimeId() !== 0){
 			//blockitem meta is zeroed out by the client, so we have to infer it from the block runtime ID
 			$runtime = $itemStack->getBlockRuntimeId();
-			if($runtime === 33 or $runtime === 5053 or $runtime === 9992 or $runtime === 10016 or $runtime === 12601 or $runtime === 13258) { //heads
+			if($runtime === 33 or $runtime === 5069 or $runtime === 10008 or $runtime === 10032 or $runtime === 12617 or $runtime === 13274) { //heads
 				$blockFullId = 397;
 			} else {
 				$blockFullId = RuntimeBlockMapping::getInstance()->fromRuntimeId($itemStack->getBlockRuntimeId());
