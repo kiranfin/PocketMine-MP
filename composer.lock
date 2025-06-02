@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "17163c297b3e4d98d693a9ed9aa3a6a3",
+    "content-hash": "7a4e32a675a60ff77e780110568fa8fe",
     "packages": [
         {
             "name": "adhocore/json-comment",
@@ -281,16 +281,16 @@
         },
         {
             "name": "pocketmine/bedrock-protocol",
-            "version": "38.0.0+bedrock-1.21.80",
+            "version": "38.1.0+bedrock-1.21.80",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pmmp/BedrockProtocol.git",
-                "reference": "a626561eaefeb6333c0d2726e2789ceb0aac0724"
+                "reference": "a1fa215563517050045309bb779a67f75843b867"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pmmp/BedrockProtocol/zipball/a626561eaefeb6333c0d2726e2789ceb0aac0724",
-                "reference": "a626561eaefeb6333c0d2726e2789ceb0aac0724",
+                "url": "https://api.github.com/repos/pmmp/BedrockProtocol/zipball/a1fa215563517050045309bb779a67f75843b867",
+                "reference": "a1fa215563517050045309bb779a67f75843b867",
                 "shasum": ""
             },
             "require": {
@@ -321,9 +321,9 @@
             "description": "An implementation of the Minecraft: Bedrock Edition protocol in PHP",
             "support": {
                 "issues": "https://github.com/pmmp/BedrockProtocol/issues",
-                "source": "https://github.com/pmmp/BedrockProtocol/tree/38.0.0+bedrock-1.21.80"
+                "source": "https://github.com/pmmp/BedrockProtocol/tree/38.1.0+bedrock-1.21.80"
             },
-            "time": "2025-05-09T14:17:07+00:00"
+            "time": "2025-05-28T22:19:59+00:00"
         },
         {
             "name": "pocketmine/binaryutils",
@@ -1559,16 +1559,16 @@
         },
         {
             "name": "nikic/php-parser",
-            "version": "v5.4.0",
+            "version": "v5.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "447a020a1f875a434d62f2a401f53b82a396e494"
+                "reference": "ae59794362fe85e051a58ad36b289443f57be7a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/447a020a1f875a434d62f2a401f53b82a396e494",
-                "reference": "447a020a1f875a434d62f2a401f53b82a396e494",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/ae59794362fe85e051a58ad36b289443f57be7a9",
+                "reference": "ae59794362fe85e051a58ad36b289443f57be7a9",
                 "shasum": ""
             },
             "require": {
@@ -1611,9 +1611,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nikic/PHP-Parser/issues",
-                "source": "https://github.com/nikic/PHP-Parser/tree/v5.4.0"
+                "source": "https://github.com/nikic/PHP-Parser/tree/v5.5.0"
             },
-            "time": "2024-12-30T11:07:19+00:00"
+            "time": "2025-05-31T08:24:38+00:00"
         },
         {
             "name": "phar-io/manifest",
