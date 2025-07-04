@@ -39,12 +39,13 @@ use function is_bool;
 use function is_int;
 use function is_string;
 use function json_decode;
+use const pocketmine\RESOURCE_PATH;
 
 final class GlobalItemTypeDictionary{
 	use SingletonTrait;
 
 	private static function make() : self{
-		$data = Filesystem::fileGetContents(BedrockDataFiles::REQUIRED_ITEM_LIST_JSON);
+		$data = Filesystem::fileGetContents(RESOURCE_PATH . '/current/required_item_list.json');
 		$table = json_decode($data, true);
 		if(!is_array($table)){
 			throw new AssumptionFailedError("Invalid item list format");
