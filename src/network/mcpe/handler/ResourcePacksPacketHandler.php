@@ -88,7 +88,7 @@ class ResourcePacksPacketHandler extends PacketHandler{
 			false,
 			worldTemplateId: Uuid::fromString(Uuid::NIL),
 			worldTemplateVersion: "",
-			forceDisableVibrantVisuals: true,
+			forceDisableVibrantVisuals: false,
 		));
 		$this->session->getLogger()->debug("Waiting for client to accept resource packs");
 	}
