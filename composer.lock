@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6161a34a10f557e2753650b42265292c",
+    "content-hash": "b149afdda7c74c082ddf1664bf28d02b",
     "packages": [
         {
             "name": "adhocore/json-comment",
@@ -229,16 +229,16 @@
         },
         {
             "name": "pocketmine/bedrock-data",
-            "version": "5.1.0+bedrock-1.21.90",
+            "version": "5.2.0+bedrock-1.21.93",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pmmp/BedrockData.git",
-                "reference": "89ed34957aeccc63e517aa849af593adae958e98"
+                "reference": "740e18e490c6a102b774518ff2224a06762bcaf8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pmmp/BedrockData/zipball/89ed34957aeccc63e517aa849af593adae958e98",
-                "reference": "89ed34957aeccc63e517aa849af593adae958e98",
+                "url": "https://api.github.com/repos/pmmp/BedrockData/zipball/740e18e490c6a102b774518ff2224a06762bcaf8",
+                "reference": "740e18e490c6a102b774518ff2224a06762bcaf8",
                 "shasum": ""
             },
             "type": "library",
@@ -249,9 +249,9 @@
             "description": "Blobs of data generated from Minecraft: Bedrock Edition, used by PocketMine-MP",
             "support": {
                 "issues": "https://github.com/pmmp/BedrockData/issues",
-                "source": "https://github.com/pmmp/BedrockData/tree/bedrock-1.21.90"
+                "source": "https://github.com/pmmp/BedrockData/tree/bedrock-1.21.93"
             },
-            "time": "2025-06-17T23:44:21+00:00"
+            "time": "2025-07-08T12:30:28+00:00"
         },
         {
             "name": "pocketmine/bedrock-item-upgrade-schema",
@@ -281,16 +281,16 @@
         },
         {
             "name": "pocketmine/bedrock-protocol",
-            "version": "dev-bedrock-1.21.93",
+            "version": "39.1.0+bedrock-1.21.93",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pmmp/BedrockProtocol.git",
-                "reference": "2c536b6e5d0af001ca3ed67342803b34ff7a2cba"
+                "reference": "e9bc5fb691d18dab229a158462c13f0c6fea79c8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pmmp/BedrockProtocol/zipball/2c536b6e5d0af001ca3ed67342803b34ff7a2cba",
-                "reference": "2c536b6e5d0af001ca3ed67342803b34ff7a2cba",
+                "url": "https://api.github.com/repos/pmmp/BedrockProtocol/zipball/e9bc5fb691d18dab229a158462c13f0c6fea79c8",
+                "reference": "e9bc5fb691d18dab229a158462c13f0c6fea79c8",
                 "shasum": ""
             },
             "require": {
@@ -321,9 +321,9 @@
             "description": "An implementation of the Minecraft: Bedrock Edition protocol in PHP",
             "support": {
                 "issues": "https://github.com/pmmp/BedrockProtocol/issues",
-                "source": "https://github.com/pmmp/BedrockProtocol/tree/bedrock-1.21.93"
+                "source": "https://github.com/pmmp/BedrockProtocol/tree/39.1.0+bedrock-1.21.93"
             },
-            "time": "2025-07-03T20:07:51+00:00"
+            "time": "2025-07-08T12:31:39+00:00"
         },
         {
             "name": "pocketmine/binaryutils",
@@ -1499,16 +1499,16 @@
     "packages-dev": [
         {
             "name": "myclabs/deep-copy",
-            "version": "1.13.1",
+            "version": "1.13.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/myclabs/DeepCopy.git",
-                "reference": "1720ddd719e16cf0db4eb1c6eca108031636d46c"
+                "reference": "faed855a7b5f4d4637717c2b3863e277116beb36"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/1720ddd719e16cf0db4eb1c6eca108031636d46c",
-                "reference": "1720ddd719e16cf0db4eb1c6eca108031636d46c",
+                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/faed855a7b5f4d4637717c2b3863e277116beb36",
+                "reference": "faed855a7b5f4d4637717c2b3863e277116beb36",
                 "shasum": ""
             },
             "require": {
@@ -1547,7 +1547,7 @@
             ],
             "support": {
                 "issues": "https://github.com/myclabs/DeepCopy/issues",
-                "source": "https://github.com/myclabs/DeepCopy/tree/1.13.1"
+                "source": "https://github.com/myclabs/DeepCopy/tree/1.13.3"
             },
             "funding": [
                 {
@@ -1555,7 +1555,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-04-29T12:36:36+00:00"
+            "time": "2025-07-05T12:25:42+00:00"
         },
         {
             "name": "nikic/php-parser",
@@ -3287,9 +3287,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "pocketmine/bedrock-protocol": 20
-    },
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
