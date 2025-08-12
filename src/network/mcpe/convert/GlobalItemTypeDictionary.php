@@ -45,7 +45,7 @@ final class GlobalItemTypeDictionary{
 	use SingletonTrait;
 
 	private static function make() : self{
-		$data = Filesystem::fileGetContents(BedrockDataFiles::REQUIRED_ITEM_LIST_JSON));
+		$data = Filesystem::fileGetContents(BedrockDataFiles::REQUIRED_ITEM_LIST_JSON);
 		$table = json_decode($data, true);
 		if(!is_array($table)){
 			throw new AssumptionFailedError("Invalid item list format");
