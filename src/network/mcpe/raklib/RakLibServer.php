@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\raklib;
 
 use pmmp\thread\Thread as NativeThread;
 use pmmp\thread\ThreadSafeArray;
-use pocketmine\snooze\SleeperNotifier;
+use pocketmine\snooze\SleeperHandlerEntry;
 use pocketmine\thread\log\ThreadSafeLogger;
 use pocketmine\thread\NonThreadSafeValue;
 use pocketmine\thread\Thread;
@@ -70,7 +70,7 @@ class RakLibServer extends Thread{
 	private int $protocolVersion;
 
 	/** @var SleeperNotifier */
-	protected $mainThreadNotifier;
+	protected SleeperHandlerEntry $sleeperEntry
 
 	/** @phpstan-var NonThreadSafeValue<RakLibThreadCrashInfo>|null */
 	public ?NonThreadSafeValue $crashInfo = null;
@@ -166,7 +166,7 @@ class RakLibServer extends Thread{
 				$this->maxMtuSize,
 				new SimpleProtocolAcceptor($this->protocolVersion),
 				new UserToRakLibThreadMessageReceiver(new PthreadsChannelReader($this->mainToThreadBuffer)),
-				new RakLibToUserThreadMessageSender(new SnoozeAwarePthreadsChannelWriter($this->threadToMainBuffer, $this->mainThreadNotifier)),
+				new RakLibToUserThreadMessageSender(new SnoozeAwarePthreadsChannelWriter($this->threadToMainBuffer, $this->sleeperEntry->createNotifier())),
 				new ExceptionTraceCleaner($this->mainPath)
 			);
 			$this->synchronized(function() : void{
