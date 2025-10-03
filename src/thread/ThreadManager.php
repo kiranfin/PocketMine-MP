@@ -23,9 +23,11 @@ declare(strict_types=1);
 
 namespace pocketmine\thread;
 
+use pmmp\thread\ThreadSafe;
+use pmmp\thread\ThreadSafeArray;
 use function spl_object_id;
 
-class ThreadManager extends \Volatile{
+class ThreadManager extends ThreadSafe{
 
 	private static ?self $instance = null;
 
@@ -40,12 +42,19 @@ class ThreadManager extends \Volatile{
 		return self::$instance;
 	}
 
+	/** @phpstan-var ThreadSafeArray<int, Thread|Worker> */
+	private ThreadSafeArray $threads;
+
+	private function __construct(){
+		$this->threads = new \ThreadedArray();
+	}
+
 	/**
 	 * @param Worker|Thread $thread
 	 */
 	public function add($thread) : void{
 		if($thread instanceof Thread || $thread instanceof Worker){
-			$this[spl_object_id($thread)] = $thread;
+			$this->threads[spl_object_id($thread)] = $thread;
 		}
 	}
 
@@ -54,7 +63,7 @@ class ThreadManager extends \Volatile{
 	 */
 	public function remove($thread) : void{
 		if($thread instanceof Thread || $thread instanceof Worker){
-			unset($this[spl_object_id($thread)]);
+			unset($this->threads[spl_object_id($thread)]);
 		}
 	}
 
@@ -66,7 +75,7 @@ class ThreadManager extends \Volatile{
 		/**
 		 * @var Worker|Thread $thread
 		 */
-		foreach($this as $key => $thread){
+		foreach($this->threads as $key => $thread){
 			$array[$key] = $thread;
 		}
 

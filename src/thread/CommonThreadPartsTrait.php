@@ -23,13 +23,17 @@ declare(strict_types=1);
 
 namespace pocketmine\thread;
 
+use pmmp\thread\ThreadSafeArray;
 use pocketmine\errorhandler\ErrorToExceptionHandler;
 use pocketmine\Server;
 use function error_reporting;
 
 trait CommonThreadPartsTrait{
-	/** @var \Threaded|\ClassLoader[]|null  */
-	private ?\Threaded $classLoaders = null;
+	/**
+	* @var ThreadSafeArray|\ClassLoader[]|null
+	* @phpstan-var ThreadSafeArray<int, \ClassLoader>|null
+	*/
+	private ?ThreadSafeArray $classLoaders = null;
 	/** @var string|null */
 	protected $composerAutoloaderPath;
 
@@ -54,14 +58,15 @@ trait CommonThreadPartsTrait{
 		}
 
 		if($this->classLoaders === null){
-			$this->classLoaders = new \Threaded();
+			$loaders = $this->classLoaders = new ThreadSafeArray();
 		}else{
+			$loaders = $this->classLoaders;
 			foreach($this->classLoaders as $k => $autoloader){
 				unset($this->classLoaders[$k]);
 			}
 		}
 		foreach($autoloaders as $autoloader){
-			$this->classLoaders[] = $autoloader;
+			$loaders[] = $autoloader;
 		}
 	}
 

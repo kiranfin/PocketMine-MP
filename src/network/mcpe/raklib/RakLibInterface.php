@@ -45,6 +45,7 @@ use raklib\server\ipc\RakLibToUserThreadMessageReceiver;
 use raklib\server\ipc\UserToRakLibThreadMessageSender;
 use raklib\server\ServerEventListener;
 use raklib\utils\InternetAddress;
+use pmmp\thread\ThreadSafeArray;
 use function addcslashes;
 use function base64_encode;
 use function bin2hex;
@@ -91,8 +92,8 @@ class RakLibInterface implements ServerEventListener, AdvancedNetworkInterface{
 
 		$this->sleeper = new SleeperNotifier();
 
-		$mainToThreadBuffer = new \Threaded();
-		$threadToMainBuffer = new \Threaded();
+		$mainToThreadBuffer = new ThreadSafeArray();
+		$threadToMainBuffer = new ThreadSafeArray();
 
 		$this->rakLib = new RakLibServer(
 			$this->server->getLogger(),
