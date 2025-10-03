@@ -25,6 +25,8 @@ namespace pocketmine\utils;
 
 use LogLevel;
 use pmmp\thread\Thread as NativeThread;
+use pocketmine\thread\log\AttachableThreadSafeLogger;
+use pocketmine\thread\log\ThreadSafeLoggerAttachment;
 use pocketmine\thread\Thread;
 use pocketmine\thread\Worker;
 use function implode;
@@ -32,7 +34,7 @@ use function sprintf;
 use const PHP_EOL;
 use const PTHREADS_INHERIT_NONE;
 
-class MainLogger extends \AttachableThreadSafeLogger implements \BufferedLogger{
+class MainLogger extends AttachableThreadSafeLogger implements \BufferedLogger{
 	/** @var bool */
 	protected $logDebug;
 

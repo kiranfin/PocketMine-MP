@@ -26,6 +26,7 @@ namespace pocketmine\network\mcpe\raklib;
 use pmmp\thread\Thread as NativeThread;
 use pmmp\thread\ThreadSafeArray;
 use pocketmine\snooze\SleeperNotifier;
+use pocketmine\thread\log\ThreadSafeLogger;
 use pocketmine\thread\NonThreadSafeValue;
 use pocketmine\thread\Thread;
 use raklib\generic\Socket;
@@ -75,9 +76,9 @@ class RakLibServer extends Thread{
 	public ?NonThreadSafeValue $crashInfo = null;
 
 	public function __construct(
-		\ThreadSafeLogger $logger,
-		ThreadSafeArray $mainToThreadBuffer,
-		ThreadSafeArray $threadToMainBuffer,
+		protected ThreadSafeLogger $logger,
+		protected ThreadSafeArray $mainToThreadBuffer,
+		protected ThreadSafeArray $threadToMainBuffer,
 		InternetAddress $address,
 		int $serverId,
 		int $maxMtuSize,

@@ -93,6 +93,7 @@ use pocketmine\resourcepacks\ResourcePackManager;
 use pocketmine\scheduler\AsyncPool;
 use pocketmine\snooze\SleeperHandler;
 use pocketmine\stats\SendUsageTask;
+use pocketmine\thread\log\AttachableThreadSafeLogger;
 use pocketmine\timings\Timings;
 use pocketmine\timings\TimingsHandler;
 use pocketmine\updater\UpdateChecker;
@@ -419,7 +420,7 @@ class Server{
 		return $this->autoloader;
 	}
 
-	public function getLogger() : \AttachableThreadSafeLogger{
+	public function getLogger() : AttachableThreadSafeLogger{
 		return $this->logger;
 	}
 
@@ -766,7 +767,7 @@ class Server{
 
 	public function __construct(
 		private \DynamicClassLoader $autoloader,
-		private \AttachableThreadSafeLogger $logger,
+		private AttachableThreadSafeLogger $logger,
 		string $dataPath,
 		string $pluginPath
 	){

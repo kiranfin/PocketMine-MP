@@ -27,6 +27,7 @@ use pmmp\thread\Thread as NativeThread;
 use pmmp\thread\ThreadSafeArray;
 use pocketmine\snooze\SleeperHandler;
 use pocketmine\snooze\SleeperNotifier;
+use pocketmine\thread\log\ThreadSafeLogger;
 use pocketmine\utils\Utils;
 use function array_keys;
 use function array_map;
@@ -73,7 +74,7 @@ class AsyncPool{
 		int $size,
 		private int $workerMemoryLimit,
 		private \ClassLoader $classLoader,
-		private \ThreadSafeLogger $logger,
+		private ThreadSafeLogger $logger,
 		private SleeperHandler $eventLoop
 	){
 		$this->size = $size;
