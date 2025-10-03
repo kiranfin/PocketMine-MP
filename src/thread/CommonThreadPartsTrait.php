@@ -30,8 +30,8 @@ use function error_reporting;
 
 trait CommonThreadPartsTrait{
 	/**
-	* @var ThreadSafeArray|\ClassLoader[]|null
-	* @phpstan-var ThreadSafeArray<int, \ClassLoader>|null
+	* @var ThreadSafeArray|ThreadSafeClassLoader[]|null
+	* @phpstan-var ThreadSafeArray<int, ThreadSafeClassLoader>|null
 	*/
 	private ?ThreadSafeArray $classLoaders = null;
 	/** @var string|null */
@@ -41,14 +41,14 @@ trait CommonThreadPartsTrait{
 	protected $isKilled = false;
 
 	/**
-	 * @return \ClassLoader[]
+	 * @return ThreadSafeClassLoader[]
 	 */
 	public function getClassLoaders() : ?array{
 		return $this->classLoaders !== null ? (array) $this->classLoaders : null;
 	}
 
 	/**
-	 * @param \ClassLoader[] $autoloaders
+	 * @param ThreadSafeClassLoader[] $autoloaders
 	 */
 	public function setClassLoaders(?array $autoloaders = null) : void{
 		$this->composerAutoloaderPath = \pocketmine\COMPOSER_AUTOLOADER_PATH;
@@ -84,7 +84,7 @@ trait CommonThreadPartsTrait{
 		$autoloaders = $this->classLoaders;
 		if($autoloaders !== null){
 			foreach($autoloaders as $autoloader){
-				/** @var \ClassLoader $autoloader */
+				/** @var ThreadSafeClassLoader $autoloader */
 				$autoloader->register(false);
 			}
 		}

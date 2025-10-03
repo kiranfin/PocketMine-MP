@@ -94,6 +94,7 @@ use pocketmine\scheduler\AsyncPool;
 use pocketmine\snooze\SleeperHandler;
 use pocketmine\stats\SendUsageTask;
 use pocketmine\thread\log\AttachableThreadSafeLogger;
+use pocketmine\thread\ThreadSafeClassLoader;
 use pocketmine\timings\Timings;
 use pocketmine\timings\TimingsHandler;
 use pocketmine\updater\UpdateChecker;
@@ -416,7 +417,7 @@ class Server{
 		return $this->configGroup->getConfigString("motd", self::DEFAULT_SERVER_NAME);
 	}
 
-	public function getLoader() : \DynamicClassLoader{
+	public function getLoader() : ThreadSafeClassLoader{
 		return $this->autoloader;
 	}
 
@@ -766,7 +767,7 @@ class Server{
 	}
 
 	public function __construct(
-		private \DynamicClassLoader $autoloader,
+		private ThreadSafeClassLoader $autoloader,
 		private AttachableThreadSafeLogger $logger,
 		string $dataPath,
 		string $pluginPath

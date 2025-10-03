@@ -25,6 +25,7 @@ namespace pocketmine\scheduler;
 
 use pmmp\thread\Runnable;
 use pmmp\thread\Thread as NativeThread;
+use pmmp\thread\ThreadSafe;
 use pmmp\thread\ThreadSafeArray;
 use pocketmine\thread\NonThreadSafeValue;
 use function assert;
@@ -71,7 +72,7 @@ abstract class AsyncTask extends Runnable{
 	public ThreadSafeArray $progressUpdates;
 
 	/** @phpstan-var NonThreadSafeValue<mixed>|string|int|bool|float|null */
-	private NonThreadSafeValue|string|int|bool|null|float $result = null;
+	private ThreadSafe|string|int|bool|null|float $result = null;
 	private bool $serialized = false;
 	private bool $cancelRun = false;
 	private bool $submitted = false;
@@ -128,7 +129,7 @@ abstract class AsyncTask extends Runnable{
 	 * @param mixed $result
 	 */
 	public function setResult($result) : void{
-		$this->result = is_scalar($result) || is_null($result) ? $result : new NonThreadSafeValue($result);
+		$this->result = is_scalar($result) || is_null($result) || $result instanceof ThreadSafe ? $result : new NonThreadSafeValue($result);
 	}
 
 	public function cancelRun() : void{
