@@ -177,7 +177,7 @@ class ProcessLoginTask extends AsyncTask{
 		$mapper->bRemoveUndefinedAttributes = true;
 		try{
 			/** @var LegacyAuthJwtBody  $claims */
-			$claims = $mapper->map($claimsArray, new LegacyAuthJwtBody ());
+			$claims = $mapper->map($claimsArray, new LegacyAuthJwtBody());
 		}catch(\JsonMapper_Exception $e){
 			throw new VerifyLoginException("Invalid chain link body: " . $e->getMessage(), 0, $e);
 		}

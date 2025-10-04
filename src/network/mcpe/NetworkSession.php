@@ -472,7 +472,7 @@ class NetworkSession{
 				return false;
 			}
 
-			$this->addToSendBuffer(self::encodePacketTimed(new ByteBufferWriter(), $packet));//
+			$this->addToSendBuffer(self::encodePacketTimed(new ByteBufferWriter(), $packet));
 			if($immediate){
 				$this->flushSendBuffer(true);
 			}

@@ -63,8 +63,8 @@ class LoginPacketHandler extends PacketHandler{
 
 	public function handleLogin(LoginPacket $packet) : bool{
 		$authInfo = $this->parseAuthInfo($packet->authInfoJson);
-		$LegacyAuthChain = $this->parseLegacyAuthChain($authInfo->Certificate);
-		$extraData = $this->fetchAuthData($LegacyAuthChain);
+		$legacyAuthChain = $this->parseLegacyAuthChain($authInfo->Certificate);
+		$extraData = $this->fetchAuthData($legacyAuthChain);
 
 		if(!Player::isValidUserName($extraData->displayName)){
 			$this->session->disconnect(KnownTranslationKeys::DISCONNECTIONSCREEN_INVALIDNAME);
@@ -129,7 +129,7 @@ class LoginPacketHandler extends PacketHandler{
 			return true;
 		}
 
-		$this->processLogin($authInfo->Token, AuthenticationType::from($authInfo->AuthenticationType), $LegacyAuthChain->chain, $packet->clientDataJwt, $ev->isAuthRequired());
+		$this->processLogin($authInfo->Token, AuthenticationType::from($authInfo->AuthenticationType), $legacyAuthChain->chain, $packet->clientDataJwt, $ev->isAuthRequired());
 
 		return true;
 	}
@@ -164,12 +164,12 @@ class LoginPacketHandler extends PacketHandler{
 	 */
 	protected function parseLegacyAuthChain(string $chainDataJwt) : LegacyAuthChain{
 		try{
-			$LegacyAuthChainJson = json_decode($chainDataJwt, associative: false, flags: JSON_THROW_ON_ERROR);
+			$legacyAuthChainJson = json_decode($chainDataJwt, associative: false, flags: JSON_THROW_ON_ERROR);
 		}catch(\JsonException $e){
 			throw PacketHandlingException::wrap($e);
 		}
-		if(!is_object($LegacyAuthChainJson)){
-			throw new \RuntimeException("Unexpected type for JWT chain data: " . gettype($LegacyAuthChainJson) . ", expected object");
+		if(!is_object($legacyAuthChainJson)){
+			throw new \RuntimeException("Unexpected type for JWT chain data: " . gettype($legacyAuthChainJson) . ", expected object");
 		}
 
 		$mapper = new \JsonMapper();
@@ -177,7 +177,7 @@ class LoginPacketHandler extends PacketHandler{
 		$mapper->bExceptionOnUndefinedProperty = true;
 		$mapper->bStrictObjectTypeChecking = true;
 		try{
-			$clientData = $mapper->map($LegacyAuthChainJson, new LegacyAuthChain());
+			$clientData = $mapper->map($legacyAuthChainJson, new LegacyAuthChain());
 		}catch(\JsonMapper_Exception $e){
 			throw PacketHandlingException::wrap($e);
 		}

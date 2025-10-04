@@ -26,7 +26,7 @@ namespace pocketmine\world\format\io;
 use pmmp\encoding\BE;
 use pmmp\encoding\Byte;
 use pmmp\encoding\ByteBufferReader;
-use pocketmine\utils\BinaryStream;
+use pmmp\encoding\ByteBufferWriter;
 use pocketmine\world\format\BiomeArray;
 use pocketmine\world\format\Chunk;
 use pocketmine\world\format\PalettedBlockArray;
@@ -53,37 +53,36 @@ final class FastChunkSerializer{
 	 * TODO: tiles and entities
 	 */
 	public static function serializeTerrain(Chunk $chunk) : string{
-		$stream = new BinaryStream();
-		$stream->putByte(
-			($chunk->isPopulated() ? self::FLAG_POPULATED : 0)
-		);
+		$stream = new ByteBufferWriter();
+		Byte::writeUnsigned($stream, ($chunk->isPopulated() ? self::FLAG_POPULATED : 0));
+
 
 		//subchunks
 		$subChunks = $chunk->getSubChunks();
 		$count = count($subChunks);
-		$stream->putByte($count);
+		Byte::writeUnsigned($stream, $count);
 
 		foreach($subChunks as $y => $subChunk){
-			$stream->putByte($y);
-			$stream->putInt($subChunk->getEmptyBlockId());
+			Byte::writeSigned($stream, $y);
+			BE::writeUnsignedInt($stream, $subChunk->getEmptyBlockId());
 			$layers = $subChunk->getBlockLayers();
-			$stream->putByte(count($layers));
+			Byte::writeUnsigned($stream, count($layers));
 			foreach($layers as $blocks){
 				$wordArray = $blocks->getWordArray();
 				$palette = $blocks->getPalette();
 
-				$stream->putByte($blocks->getBitsPerBlock());
-				$stream->put($wordArray);
+				Byte::writeUnsigned($stream, $blocks->getBitsPerBlock());
+				$stream->writeByteArray($wordArray);
 				$serialPalette = pack("L*", ...$palette);
-				$stream->putInt(strlen($serialPalette));
-				$stream->put($serialPalette);
+				BE::writeUnsignedInt($stream, strlen($serialPalette));
+				$stream->writeByteArray($serialPalette);
 			}
 		}
 
 		//biomes
-		$stream->put($chunk->getBiomeIdArray());
+		$stream->writeByteArray($chunk->getBiomeIdArray());
 
-		return $stream->getBuffer();
+		return $stream->getData();
 	}
 
 	/**
