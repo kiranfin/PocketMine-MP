@@ -23,13 +23,15 @@ declare(strict_types=1);
 
 namespace pocketmine\network\mcpe\serializer;
 
+use pmmp\encoding\Byte;
+use pmmp\encoding\ByteBufferWriter;
+use pmmp\encoding\VarInt;
 use pocketmine\block\tile\Spawnable;
 use pocketmine\data\bedrock\BiomeIds;
 use pocketmine\data\bedrock\LegacyBiomeIdToStringIdMap;
 use pocketmine\nbt\TreeRoot;
 use pocketmine\network\mcpe\convert\RuntimeBlockMapping;
 use pocketmine\network\mcpe\protocol\serializer\NetworkNbtSerializer;
-use pocketmine\network\mcpe\protocol\serializer\PacketSerializer;
 use pocketmine\utils\Binary;
 use pocketmine\utils\BinaryStream;
 use pocketmine\world\format\Chunk;
@@ -62,12 +64,12 @@ final class ChunkSerializer{
 	}
 
 	public static function serializeFullChunk(Chunk $chunk, RuntimeBlockMapping $blockMapper, ?string $tiles = null) : string{
-		$stream = PacketSerializer::encoder();
+		$stream = new ByteBufferWriter();
 
 		//TODO: HACK! fill in fake subchunks to make up for the new negative space client-side
 		for($y = 0; $y < self::LOWER_PADDING_SIZE; $y++){
-			$stream->putByte(8); //subchunk version 8
-			$stream->putByte(0); //0 layers - client will treat this as all-air
+			Byte::writeUnsigned($stream, 8); //subchunk version 8
+			Byte::writeUnsigned($stream, 0); //0 layers - client will treat this as all-air
 		}
 
 		$subChunkCount = self::getSubChunkCount($chunk);
@@ -77,60 +79,58 @@ final class ChunkSerializer{
 
 		//TODO: right now we don't support 3D natively, so we just 3Dify our 2D biomes so they fill the column
 		$encodedBiomePalette = self::serializeBiomesAsPalette($chunk);
-		$stream->put(str_repeat($encodedBiomePalette, 24));
+		$stream->writeByteArray(str_repeat($encodedBiomePalette, 24));
 
-		$stream->putByte(0); //border block array count
+		Byte::writeUnsigned($stream, 0); //border block array count
 		//Border block entry format: 1 byte (4 bits X, 4 bits Z). These are however useless since they crash the regular client.
 
 		if($tiles !== null){
-			$stream->put($tiles);
+			$stream->writeByteArray($tiles);
 		}else{
-			$stream->put(self::serializeTiles($chunk));
+			$stream->writeByteArray(self::serializeTiles($chunk));
 		}
-		return $stream->getBuffer();
+		return $stream->getData();
 	}
 
-	public static function serializeSubChunk(SubChunk $subChunk, RuntimeBlockMapping $blockMapper, PacketSerializer $stream, bool $persistentBlockStates) : void{
+	public static function serializeSubChunk(SubChunk $subChunk, RuntimeBlockMapping $blockMapper, ByteBufferWriter $stream, bool $persistentBlockStates) : void{
 		$layers = $subChunk->getBlockLayers();
-		$stream->putByte(8); //version
+		Byte::writeUnsigned($stream, 8); //version
 
-		$stream->putByte(count($layers));
+		Byte::writeUnsigned($stream, count($layers));
 
 		foreach($layers as $blocks){
 			$bitsPerBlock = $blocks->getBitsPerBlock();
 			$words = $blocks->getWordArray();
-			$stream->putByte(($bitsPerBlock << 1) | ($persistentBlockStates ? 0 : 1));
-			$stream->put($words);
+			Byte::writeUnsigned($stream, ($bitsPerBlock << 1) | ($persistentBlockStates ? 0 : 1));
+			$stream->writeByteArray($words);
 			$palette = $blocks->getPalette();
 
 			if($bitsPerBlock !== 0){
-				//these LSHIFT by 1 uvarints are optimizations: the client expects zigzag varints here
-				//but since we know they are always unsigned, we can avoid the extra fcall overhead of
-				//zigzag and just shift directly.
-				$stream->putUnsignedVarInt(count($palette) << 1); //yes, this is intentionally zigzag
+				VarInt::writeSignedInt($stream, count($palette)); //yes, this is intentionally zigzag
 			}
 			if($persistentBlockStates){
 				$nbtSerializer = new NetworkNbtSerializer();
 				foreach($palette as $p){
-					$stream->put($nbtSerializer->write(new TreeRoot($blockMapper->getBedrockKnownStates()[$blockMapper->toRuntimeId($p)])));
+					$stream->writeByteArray($nbtSerializer->write(new TreeRoot($blockMapper->getBedrockKnownStates()[$blockMapper->toRuntimeId($p)])));
 				}
 			}else{
 				foreach($palette as $p){
-					$stream->put(Binary::writeUnsignedVarInt($blockMapper->toRuntimeId($p) << 1));
+					VarInt::writeSignedInt($stream, $blockMapper->toRuntimeId($p));
+
 				}
 			}
 		}
 	}
 
 	public static function serializeTiles(Chunk $chunk) : string{
-		$stream = new BinaryStream();
+		$stream = new ByteBufferWriter();
 		foreach($chunk->getTiles() as $tile){
 			if($tile instanceof Spawnable){
-				$stream->put($tile->getSerializedSpawnCompound()->getEncodedNbt());
+				$stream->writeByteArray($tile->getSerializedSpawnCompound()->getEncodedNbt());
 			}
 		}
 
-		return $stream->getBuffer();
+		return $stream->getData();
 	}
 
 	private static function serializeBiomesAsPalette(Chunk $chunk) : string{

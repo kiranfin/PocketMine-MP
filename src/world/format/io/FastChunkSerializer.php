@@ -23,7 +23,9 @@ declare(strict_types=1);
 
 namespace pocketmine\world\format\io;
 
-use pocketmine\utils\Binary;
+use pmmp\encoding\BE;
+use pmmp\encoding\Byte;
+use pmmp\encoding\ByteBufferReader;
 use pocketmine\utils\BinaryStream;
 use pocketmine\world\format\BiomeArray;
 use pocketmine\world\format\Chunk;
@@ -88,25 +90,26 @@ final class FastChunkSerializer{
 	 * Deserializes a fast-serialized chunk
 	 */
 	public static function deserializeTerrain(string $data) : Chunk{
-		$stream = new BinaryStream($data);
+		$stream = new ByteBufferReader($data);
 
-		$flags = $stream->getByte();
+		$flags = Byte::readUnsigned($stream);
 		$terrainPopulated = (bool) ($flags & self::FLAG_POPULATED);
 
 		$subChunks = [];
 
-		$count = $stream->getByte();
+		$count = Byte::readUnsigned($stream);
 		for($subCount = 0; $subCount < $count; ++$subCount){
-			$y = Binary::signByte($stream->getByte());
-			$airBlockId = $stream->getInt();
+			$y = Byte::readSigned($stream);
+			$airBlockId = BE::readUnsignedInt($stream);
 
 			/** @var PalettedBlockArray[] $layers */
 			$layers = [];
-			for($i = 0, $layerCount = $stream->getByte(); $i < $layerCount; ++$i){
-				$bitsPerBlock = $stream->getByte();
-				$words = $stream->get(PalettedBlockArray::getExpectedWordArraySize($bitsPerBlock));
+			for($i = 0, $layerCount = Byte::readUnsigned($stream); $i < $layerCount; ++$i){
+				$bitsPerBlock = Byte::readUnsigned($stream);
+				$words = $stream->readByteArray(PalettedBlockArray::getExpectedWordArraySize($bitsPerBlock));
+				$paletteSize = BE::readUnsignedInt($stream);
 				/** @var int[] $unpackedPalette */
-				$unpackedPalette = unpack("L*", $stream->get($stream->getInt())); //unpack() will never fail here
+				$unpackedPalette = unpack("L*", $stream->readByteArray($paletteSize)); //unpack() will never fail here
 				$palette = array_values($unpackedPalette);
 
 				$layers[] = PalettedBlockArray::fromData($bitsPerBlock, $words, $palette);
@@ -114,7 +117,7 @@ final class FastChunkSerializer{
 			$subChunks[$y] = new SubChunk($airBlockId, $layers);
 		}
 
-		$biomeIds = new BiomeArray($stream->get(256));
+		$biomeIds = new BiomeArray($stream->readByteArray(256));
 
 		return new Chunk($subChunks, $biomeIds, $terrainPopulated);
 	}

@@ -93,6 +93,7 @@ namespace pocketmine {
 			"crypto" => "php-crypto",
 			"ctype" => "ctype",
 			"date" => "Date",
+			"encoding" => "pmmp/ext-encoding",
 			"gmp" => "GMP",
 			"hash" => "Hash",
 			"igbinary" => "igbinary",
@@ -144,6 +145,12 @@ namespace pocketmine {
 			preg_match("/^" . preg_quote($wantedVersionLock, "/") . "\.\d+(?:-dev)?$/", $chunkutils2_version) === 0 //lock in at ^0.2, optionally at a patch release
 		)){
 			$messages[] = "chunkutils2 ^$wantedVersionMin is required, while you have $chunkutils2_version.";
+		}
+
+		if(($encoding_version = phpversion("encoding")) !== false){
+			if(version_compare($encoding_version, "1.0.0") < 0 || version_compare($encoding_version, "2.0.0") >= 0){
+				$messages[] = "pmmp/ext-encoding ^1.0.0 is required, while you have $encoding_version.";
+			}
 		}
 
 		if(extension_loaded("pocketmine")){

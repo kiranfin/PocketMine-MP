@@ -32,7 +32,6 @@
       "ext-zlib": ">=1.2.11",
       "composer-runtime-api": "^2.0",
       "adhocore/json-comment": "~1.2.0",
-      "fgrosse/phpasn1": "~2.5.0",
       "pocketmine/bedrock-block-upgrade-schema": "5.2.0+bedrock-1.21.110",
       "pocketmine/bedrock-data": "dev-master#7484fe3c3d7949fd48cc520add4f7eeebc4ba4af",
       "pocketmine/bedrock-item-upgrade-schema": "1.16.0+bedrock-1.21.110",

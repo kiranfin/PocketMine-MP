@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace pocketmine\network\mcpe\cache;
 
+use pmmp\encoding\BE;
 use pocketmine\crafting\CraftingManager;
 use pocketmine\crafting\FurnaceType;
 use pocketmine\crafting\ShapedRecipe;
@@ -44,7 +45,6 @@ use pocketmine\network\mcpe\protocol\types\recipe\ShapedRecipe as ProtocolShaped
 use pocketmine\network\mcpe\protocol\types\recipe\ShapelessRecipe as ProtocolShapelessRecipe;
 use pocketmine\timings\Timings;
 use pocketmine\utils\AssumptionFailedError;
-use pocketmine\utils\Binary;
 use pocketmine\utils\SingletonTrait;
 use Ramsey\Uuid\Uuid;
 use function array_map;
@@ -94,7 +94,7 @@ final class CraftingDataCache{
 				};
 				$recipesWithTypeIds[] = new ProtocolShapelessRecipe(
 					CraftingDataPacket::ENTRY_SHAPELESS,
-					Binary::writeInt($index),
+					BE::packUnsignedInt($index),
 					array_map(function(Item $item) use ($converter) : RecipeIngredient{
 						return $converter->coreItemStackToRecipeIngredient($item);
 					}, $recipe->getIngredientList()),
@@ -117,7 +117,7 @@ final class CraftingDataCache{
 				}
 				$recipesWithTypeIds[] = $r = new ProtocolShapedRecipe(
 					CraftingDataPacket::ENTRY_SHAPED,
-					Binary::writeInt($index),
+					BE::packUnsignedInt($index),
 					$inputs,
 					array_map(function(Item $item) use ($converter) : ItemStack{
 						return $converter->coreItemStackToNet($item);
