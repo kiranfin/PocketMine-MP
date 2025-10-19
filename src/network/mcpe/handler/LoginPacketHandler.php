@@ -32,12 +32,12 @@ use pocketmine\network\mcpe\JwtException;
 use pocketmine\network\mcpe\JwtUtils;
 use pocketmine\network\mcpe\NetworkSession;
 use pocketmine\network\mcpe\protocol\LoginPacket;
-use pocketmine\network\mcpe\protocol\types\login\AuthenticationData;
+use pocketmine\network\mcpe\protocol\types\login\clientdata\ClientData;
+use pocketmine\network\mcpe\protocol\types\login\legacy\LegacyAuthIdentityData;
 use pocketmine\network\mcpe\protocol\types\login\AuthenticationInfo;
 use pocketmine\network\mcpe\protocol\types\login\AuthenticationType;
-use pocketmine\network\mcpe\protocol\types\login\ClientData;
-use pocketmine\network\mcpe\protocol\types\login\ClientDataToSkinDataHelper;
-use pocketmine\network\mcpe\protocol\types\login\JwtChain;
+use pocketmine\network\mcpe\protocol\types\login\clientdata\ClientDataToSkinDataHelper;
+use pocketmine\network\mcpe\protocol\types\login\legacy\LegacyAuthChain;
 use pocketmine\network\PacketHandlingException;
 use pocketmine\player\Player;
 use pocketmine\player\PlayerInfo;
@@ -63,8 +63,8 @@ class LoginPacketHandler extends PacketHandler{
 
 	public function handleLogin(LoginPacket $packet) : bool{
 		$authInfo = $this->parseAuthInfo($packet->authInfoJson);
-		$jwtChain = $this->parseJwtChain($authInfo->Certificate);
-		$extraData = $this->fetchAuthData($jwtChain);
+		$LegacyAuthChain = $this->parseLegacyAuthChain($authInfo->Certificate);
+		$extraData = $this->fetchAuthData($LegacyAuthChain);
 
 		if(!Player::isValidUserName($extraData->displayName)){
 			$this->session->disconnect(KnownTranslationKeys::DISCONNECTIONSCREEN_INVALIDNAME);
@@ -129,7 +129,7 @@ class LoginPacketHandler extends PacketHandler{
 			return true;
 		}
 
-		$this->processLogin($authInfo->Token, AuthenticationType::from($authInfo->AuthenticationType), $jwtChain->chain, $packet->clientDataJwt, $ev->isAuthRequired());
+		$this->processLogin($authInfo->Token, AuthenticationType::from($authInfo->AuthenticationType), $LegacyAuthChain->chain, $packet->clientDataJwt, $ev->isAuthRequired());
 
 		return true;
 	}
@@ -162,14 +162,14 @@ class LoginPacketHandler extends PacketHandler{
 	/**
 	 * @throws PacketHandlingException
 	 */
-	protected function parseJwtChain(string $chainDataJwt) : JwtChain{
+	protected function parseLegacyAuthChain(string $chainDataJwt) : LegacyAuthChain{
 		try{
-			$jwtChainJson = json_decode($chainDataJwt, associative: false, flags: JSON_THROW_ON_ERROR);
+			$LegacyAuthChainJson = json_decode($chainDataJwt, associative: false, flags: JSON_THROW_ON_ERROR);
 		}catch(\JsonException $e){
 			throw PacketHandlingException::wrap($e);
 		}
-		if(!is_object($jwtChainJson)){
-			throw new \RuntimeException("Unexpected type for JWT chain data: " . gettype($jwtChainJson) . ", expected object");
+		if(!is_object($LegacyAuthChainJson)){
+			throw new \RuntimeException("Unexpected type for JWT chain data: " . gettype($LegacyAuthChainJson) . ", expected object");
 		}
 
 		$mapper = new \JsonMapper();
@@ -177,7 +177,7 @@ class LoginPacketHandler extends PacketHandler{
 		$mapper->bExceptionOnUndefinedProperty = true;
 		$mapper->bStrictObjectTypeChecking = true;
 		try{
-			$clientData = $mapper->map($jwtChainJson, new JwtChain());
+			$clientData = $mapper->map($LegacyAuthChainJson, new LegacyAuthChain());
 		}catch(\JsonMapper_Exception $e){
 			throw PacketHandlingException::wrap($e);
 		}
@@ -187,8 +187,8 @@ class LoginPacketHandler extends PacketHandler{
 	/**
 	 * @throws PacketHandlingException
 	 */
-	protected function fetchAuthData(JwtChain $chain) : AuthenticationData{
-		/** @var AuthenticationData|null $extraData */
+	protected function fetchAuthData(LegacyAuthChain $chain) : LegacyAuthIdentityData{
+		/** @var LegacyAuthIdentityData|null $extraData */
 		$extraData = null;
 		foreach($chain->chain as $k => $jwt){
 			//validate every chain element
@@ -211,8 +211,8 @@ class LoginPacketHandler extends PacketHandler{
 				$mapper->bExceptionOnUndefinedProperty = true;
 				try{
 					$claims["extraData"]["titleId"] = $claims["extraData"]["titleId"] ?? "";
-					/** @var AuthenticationData $extraData */
-					$extraData = $mapper->map($claims["extraData"], new AuthenticationData());
+					/** @var LegacyAuthIdentityData $extraData */
+					$extraData = $mapper->map($claims["extraData"], new LegacyAuthIdentityData());
 				}catch(\JsonMapper_Exception $e){
 					throw PacketHandlingException::wrap($e);
 				}
