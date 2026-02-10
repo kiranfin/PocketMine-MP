@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7a13c79166f4bcc2a556775de0db9839",
+    "content-hash": "c6a68a80d3eea00a7e6992fd64337d78",
     "packages": [
         {
             "name": "adhocore/json-comment",
@@ -229,16 +229,16 @@
         },
         {
             "name": "pocketmine/bedrock-data",
-            "version": "dev-bedrock-1.21.130",
+            "version": "dev-bedrock-1.26.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pmmp/BedrockData.git",
-                "reference": "4bc04ebbbab956c0de4a032bb15f264236ac46d7"
+                "reference": "cbbf6c3abef9a73743b56f4599934aae3790c0ac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pmmp/BedrockData/zipball/4bc04ebbbab956c0de4a032bb15f264236ac46d7",
-                "reference": "4bc04ebbbab956c0de4a032bb15f264236ac46d7",
+                "url": "https://api.github.com/repos/pmmp/BedrockData/zipball/cbbf6c3abef9a73743b56f4599934aae3790c0ac",
+                "reference": "cbbf6c3abef9a73743b56f4599934aae3790c0ac",
                 "shasum": ""
             },
             "type": "library",
@@ -249,9 +249,9 @@
             "description": "Blobs of data generated from Minecraft: Bedrock Edition, used by PocketMine-MP",
             "support": {
                 "issues": "https://github.com/pmmp/BedrockData/issues",
-                "source": "https://github.com/pmmp/BedrockData/tree/bedrock-1.21.130"
+                "source": "https://github.com/pmmp/BedrockData/tree/bedrock-1.26.0"
             },
-            "time": "2025-12-09T19:48:49+00:00"
+            "time": "2026-02-09T15:56:29+00:00"
         },
         {
             "name": "pocketmine/bedrock-item-upgrade-schema",
@@ -281,16 +281,16 @@
         },
         {
             "name": "pocketmine/bedrock-protocol",
-            "version": "1.21.130.x-dev",
+            "version": "26.0.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Benedikt05/BedrockProtocol.git",
-                "reference": "4b54bac912d96c8a0fcd58fe2b2f591c0f8c1bc6"
+                "reference": "fff91ccd0267008f918b288429aa585ecb5137cb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Benedikt05/BedrockProtocol/zipball/4b54bac912d96c8a0fcd58fe2b2f591c0f8c1bc6",
-                "reference": "4b54bac912d96c8a0fcd58fe2b2f591c0f8c1bc6",
+                "url": "https://api.github.com/repos/Benedikt05/BedrockProtocol/zipball/fff91ccd0267008f918b288429aa585ecb5137cb",
+                "reference": "fff91ccd0267008f918b288429aa585ecb5137cb",
                 "shasum": ""
             },
             "require": {
@@ -329,9 +329,9 @@
             ],
             "description": "An implementation of the Minecraft: Bedrock Edition protocol in PHP",
             "support": {
-                "source": "https://github.com/Benedikt05/BedrockProtocol/tree/1.21.130.x"
+                "source": "https://github.com/Benedikt05/BedrockProtocol/tree/1.26.0.x"
             },
-            "time": "2025-12-10T00:14:58+00:00"
+            "time": "2026-02-10T20:07:51+00:00"
         },
         {
             "name": "pocketmine/binaryutils",
@@ -1580,16 +1580,16 @@
         },
         {
             "name": "nikic/php-parser",
-            "version": "v5.6.2",
+            "version": "v5.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "3a454ca033b9e06b63282ce19562e892747449bb"
+                "reference": "dca41cd15c2ac9d055ad70dbfd011130757d1f82"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/3a454ca033b9e06b63282ce19562e892747449bb",
-                "reference": "3a454ca033b9e06b63282ce19562e892747449bb",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/dca41cd15c2ac9d055ad70dbfd011130757d1f82",
+                "reference": "dca41cd15c2ac9d055ad70dbfd011130757d1f82",
                 "shasum": ""
             },
             "require": {
@@ -1632,9 +1632,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nikic/PHP-Parser/issues",
-                "source": "https://github.com/nikic/PHP-Parser/tree/v5.6.2"
+                "source": "https://github.com/nikic/PHP-Parser/tree/v5.7.0"
             },
-            "time": "2025-10-21T19:32:17+00:00"
+            "time": "2025-12-06T11:56:16+00:00"
         },
         {
             "name": "phar-io/manifest",
